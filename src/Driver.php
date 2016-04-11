@@ -3,6 +3,7 @@
 namespace Hypweb\elFinderFlysystemDriverExt;
 
 use Hypweb\elFinderFlysystemDriverExt\Plugin\HasDir;
+use League\Flysystem\Util;
 
 /**
  * Extended version of elFinder driver for Flysytem (https://github.com/barryvdh/elfinder-flysystem-driver)
@@ -171,5 +172,27 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
         }
 
         return $this->_resultPath($this->fs->putStream($path, $fp, $config), $path);
+    }
+
+    /**
+     * Join dir name and file name and return full path
+     *
+     * @param  string $dir
+     * @param  string $name
+     * @return string
+     * @author Dmitry (dio) Levashov
+     **/
+    protected function _joinPath($dir, $name)
+    {
+        $phash = $this->encode($dir);
+        $search = $this->search($name, array(), $phash);
+        if ($search) {
+            foreach($search as $r) {
+                if ($r['phash'] === $phash && $r['name'] === $name) {
+                    return Util::normalizePath($this->decode($r['hash']));
+                }
+            }
+        }
+        return Util::normalizePath($dir . $this->separator . $name);
     }
 }
