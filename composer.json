@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=5.4",
-        "barryvdh/elfinder-flysystem-driver": "^0.2"
+        "barryvdh/elfinder-flysystem-driver": "^0.1.5|^0.2"
     },
     "autoload": {
          "classmap": ["elFinderVolumeFlysystemExt.php"],
