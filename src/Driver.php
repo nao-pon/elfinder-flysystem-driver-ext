@@ -185,7 +185,13 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
     protected function _joinPath($dir, $name)
     {
         $phash = $this->encode($dir);
+
+        // do not recursive search
+        $searchExDirReg = $this->options['searchExDirReg'];
+        $this->options['searchExDirReg'] = '/.*/';
         $search = $this->search($name, array(), $phash);
+        $this->options['searchExDirReg'] = $searchExDirReg;
+
         if ($search) {
             foreach($search as $r) {
                 if ($r['phash'] === $phash && $r['name'] === $name) {
