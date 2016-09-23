@@ -1,5 +1,4 @@
 <?php
-
 namespace Hypweb\elFinderFlysystemDriverExt;
 
 use Hypweb\elFinderFlysystemDriverExt\Plugin\HasDir;
@@ -8,13 +7,15 @@ use League\Flysystem\Util;
 /**
  * Extended version of elFinder driver for Flysytem (https://github.com/barryvdh/elfinder-flysystem-driver)
  *
- *- Supported itemID based system (such as flysystem-google-drive)
- *- Added hsaDir plugin for Flysystem
+ * - Supported itemID based system (such as flysystem-google-drive)
+ * - Added hsaDir plugin for Flysystem
  *
  * @author Naoki Sawada
- * */
+ *
+ */
 class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
 {
+
     /**
      * @inheritdoc
      */
@@ -29,9 +30,10 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
     }
 
     /**
-     * @inheritdoc 
+     * @inheritdoc
      */
-    public function clearcaches($hash = null) {
+    public function clearcaches($hash = null)
+    {
         if (is_callable('parent::clearcaches')) {
             return parent::clearcaches($hash);
         }
@@ -49,7 +51,8 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
      * Return true if volume is ready.
      *
      * @return bool
-     **/
+     *
+     */
     protected function init()
     {
         parent::init();
@@ -87,7 +90,7 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
                 $this->fscache->storeMiss($requestPath);
             }
         } else {
-            $path = ($result === false)? false : $requestPath;
+            $path = ($result === false) ? false : $requestPath;
         }
         return $path;
     }
@@ -95,9 +98,11 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
     /**
      * Return true if path is dir and has at least one childs directory
      *
-     * @param  string  $path  dir path
+     * @param string $path
+     *            dir path
      * @return bool
-     **/
+     *
+     */
     protected function _subdirs($path)
     {
         if ($this->fs->hasDir()) {
@@ -111,10 +116,13 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
     /**
      * Create dir and return created dir path or false on failed
      *
-     * @param  string  $path  parent dir path
-     * @param  string  $name  new directory name
+     * @param string $path
+     *            parent dir path
+     * @param string $name
+     *            new directory name
      * @return string|bool
-     **/
+     *
+     */
     protected function _mkdir($path, $name)
     {
         $path = $this->_joinPath($path, $name);
@@ -125,10 +133,13 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
     /**
      * Create file and return it's path or false on failed
      *
-     * @param  string  $path  parent dir path
-     * @param string  $name  new file name
+     * @param string $path
+     *            parent dir path
+     * @param string $name
+     *            new file name
      * @return string|bool
-     **/
+     *
+     */
     protected function _mkfile($path, $name)
     {
         $path = $this->_joinPath($path, $name);
@@ -139,11 +150,15 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
     /**
      * Copy file into another file
      *
-     * @param  string  $source     source file path
-     * @param  string  $target  target directory path
-     * @param  string  $name       new file name
+     * @param string $source
+     *            source file path
+     * @param string $target
+     *            target directory path
+     * @param string $name
+     *            new file name
      * @return string|bool
-     **/
+     *
+     */
     protected function _copy($source, $target, $name)
     {
         $path = $this->_joinPath($target, $name);
@@ -155,11 +170,15 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
      * Move file into another parent dir.
      * Return new file path or false.
      *
-     * @param  string  $source  source file path
-     * @param  string  $target  target dir path
-     * @param  string  $name    file name
+     * @param string $source
+     *            source file path
+     * @param string $target
+     *            target dir path
+     * @param string $name
+     *            file name
      * @return string|bool
-     **/
+     *
+     */
     protected function _move($source, $target, $name)
     {
         $path = $this->_joinPath($target, $name);
@@ -171,16 +190,21 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
      * Create new file and write into it from file pointer.
      * Return new file path or false on error.
      *
-     * @param  resource  $fp   file pointer
-     * @param  string    $dir  target dir path
-     * @param  string    $name file name
-     * @param  array     $stat file stat (required by some virtual fs)
+     * @param resource $fp
+     *            file pointer
+     * @param string $dir
+     *            target dir path
+     * @param string $name
+     *            file name
+     * @param array $stat
+     *            file stat (required by some virtual fs)
      * @return bool|string
-     **/
+     *
+     */
     protected function _save($fp, $dir, $name, $stat)
     {
         $path = $this->_joinPath($dir, $name);
-        $ext  = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
         $config = [];
         if (isset(self::$mimetypes[$ext])) {
@@ -193,11 +217,12 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
     /**
      * Join dir name and file name and return full path
      *
-     * @param  string $dir
-     * @param  string $name
+     * @param string $dir
+     * @param string $name
      * @return string
      * @author Dmitry (dio) Levashov
-     **/
+     *
+     */
     protected function _joinPath($dir, $name)
     {
         $phash = $this->encode($dir);
@@ -209,16 +234,16 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
         $this->options['searchExDirReg'] = $searchExDirReg;
 
         if ($search) {
-            foreach($search as $r) {
+            foreach ($search as $r) {
                 if ($r['phash'] === $phash && $r['name'] === $name) {
                     return Util::normalizePath($this->decode($r['hash']));
                 }
             }
         }
-        
-        // reset stat cache of parent directory 
+
+        // reset stat cache of parent directory
         $this->clearcaches($phash);
-        
+
         return Util::normalizePath($dir . $this->separator . $name);
     }
 }
