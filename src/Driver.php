@@ -29,6 +29,22 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
     }
 
     /**
+     * @inheritdoc 
+     */
+    public function clearcaches($hash = null) {
+        if (is_callable('parent::clearcaches')) {
+            return parent::clearcaches($hash);
+        }
+        // for elFinder < 2.1.16
+        if ($hash === null) {
+            $this->clearcache();
+        } else {
+            $path = $this->decode($hash);
+            unset($this->cache[$path], $this->dirsCache[$path], $this->subdirsCache[$path]);
+        }
+    }
+
+    /**
      * Prepare driver before mount volume.
      * Return true if volume is ready.
      *
@@ -199,6 +215,10 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
                 }
             }
         }
+        
+        // reset stat cache of parent directory 
+        $this->clearcaches($phash);
+        
         return Util::normalizePath($dir . $this->separator . $name);
     }
 }
