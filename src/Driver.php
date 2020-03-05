@@ -1,6 +1,8 @@
 <?php
 namespace Hypweb\elFinderFlysystemDriverExt;
 
+define('EXT_FLYSYSTEM_SLASH_SUBSTITUTE', '<:|sLASh|:>');
+
 use Hypweb\elFinderFlysystemDriverExt\Plugin\HasDir;
 use League\Flysystem\Util;
 
@@ -84,6 +86,7 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
             }
             $result = $this->fs->getMetaData($requestPath);
         }
+        $requestPath = str_replace(EXT_FLYSYSTEM_SLASH_SUBSTITUTE, '/', $requestPath);
         if ($result && isset($result['path'])) {
             $path = $result['path'];
             if ($this->fscache && $path !== $requestPath) {
@@ -243,6 +246,8 @@ class Driver extends \Barryvdh\elFinderFlysystemDriver\Driver
 
         // reset stat cache of parent directory
         $this->clearcaches($phash);
+
+        $name = str_replace('/', EXT_FLYSYSTEM_SLASH_SUBSTITUTE, $name);
 
         return Util::normalizePath($dir . $this->separator . $name);
     }
